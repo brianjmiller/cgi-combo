@@ -14,7 +14,7 @@ if (! defined $root_path) {
     #
     my $conf_file = File::Spec->catfile($Bin, 'combo.conf');
     if (-r $conf_file) {
-        open my $FH, "$conf_file" or die "Cannot open conf file: $!";
+        open my $FH, "$conf_file" or die "Cannot open conf file: $!\n";
         $root_path = <$FH>;
         close $FH;
         chomp $root_path;
@@ -29,7 +29,7 @@ my $type_map = {
 eval {
     my @files = split '&', $ENV{QUERY_STRING};
     unless (@files) {
-        die 'No files to combo';
+        die "No files to combo\n";
     }
 
     my $content_type;
@@ -45,7 +45,7 @@ eval {
             }
 
             my $path = File::Spec->catfile($root_path, sprintf('%s.%s', $name, $type));
-            open my $FH, $path or die sprintf 'Cannot open file (%s) for reading: %s', $path, $!;
+            open my $FH, $path or die sprintf "Cannot open file (%s) for reading: %s\n", $path, $!;
             my @raw = <$FH>;
             close $FH;
 
@@ -94,7 +94,7 @@ eval {
         print join '', @buffer;
     }
     else {
-        die 'Empty buffer';
+        die "Empty buffer\n";
     }
 };
 if ($@) {
