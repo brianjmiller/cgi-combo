@@ -33,7 +33,7 @@ eval {
     }
 
     my $content_type;
-    my @buffer;
+    my $buffer = [];
     for my $file (@files) {
         if ($file =~ /\A(.+)\.(js|css)\z/i) {
             my $name    = $1;
@@ -76,7 +76,7 @@ eval {
                 }
             }
 
-            push @buffer, @raw;
+            $buffer = \@raw;
 
             if (defined $content_type and $content_type ne $type_map->{$lc_type}) {
                 die sprintf "Combo can only load single type of file: %s ne %s\n", $content_type, $type_map->{$lc_type};
@@ -89,9 +89,9 @@ eval {
         }
     }
 
-    if (@buffer) {
+    if (@$buffer) {
         print "Content-Type: $content_type\r\n\r\n";
-        print join '', @buffer;
+        print join '', @$buffer;
     }
     else {
         die "Empty buffer\n";
