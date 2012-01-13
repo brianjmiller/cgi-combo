@@ -44,6 +44,12 @@ eval {
                 die "Unrecognized file type: $type\n";
             }
 
+            if (defined $content_type and $content_type ne $type_map->{$lc_type}) {
+                die sprintf "Combo can only load single type of file: %s ne %s\n", $content_type, $type_map->{$lc_type};
+            }
+
+            $content_type = $type_map->{$lc_type};
+
             my $path = File::Spec->catfile($root_path, sprintf('%s.%s', $name, $type));
             open my $FH, $path or die sprintf "Cannot open file (%s) for reading: %s\n", $path, $!;
             my @raw = <$FH>;
@@ -77,12 +83,6 @@ eval {
             }
 
             $buffer = \@raw;
-
-            if (defined $content_type and $content_type ne $type_map->{$lc_type}) {
-                die sprintf "Combo can only load single type of file: %s ne %s\n", $content_type, $type_map->{$lc_type};
-            }
-
-            $content_type = $type_map->{$lc_type};
         }
         else {
             die "Unrecognized argument format (file): $file\n";
